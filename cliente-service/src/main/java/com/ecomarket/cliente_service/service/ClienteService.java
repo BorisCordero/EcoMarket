@@ -1,46 +1,34 @@
 package com.ecomarket.cliente_service.service;
 
 import com.ecomarket.cliente_service.model.Cliente;
+import com.ecomarket.cliente_service.repository.ClienteRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class ClienteService {
 
-    private final List<Cliente> listaClientes = new ArrayList<>();
-    private int idSecuencialCliente = 1;
+    private final ClienteRepository clienteRepository;
+
+    public ClienteService(ClienteRepository clienteRepository) {
+        this.clienteRepository = clienteRepository;
+    }
 
     public List<Cliente> obtenerTodosLosClientes() {
-        return listaClientes;
+        return clienteRepository.findAll();
     }
 
-    public Cliente registrarCliente(Cliente nuevoCliente) {
-        nuevoCliente.setIdCliente(idSecuencialCliente++);
-        listaClientes.add(nuevoCliente);
-        return nuevoCliente;
+    public Optional<Cliente> buscarClientePorId(Integer idCliente) {
+        return clienteRepository.findById(idCliente);
     }
 
-    public Optional<Cliente> buscarClientePorId(int idCliente) {
-        return listaClientes.stream()
-                .filter(cliente -> cliente.getIdCliente() == idCliente)
-                .findFirst();
+    public Cliente guardarCliente(Cliente cliente) {
+        return clienteRepository.save(cliente);
     }
 
-    public Cliente actualizarCliente(int idCliente, Cliente datosActualizados) {
-        Cliente clienteExistente = buscarClientePorId(idCliente)
-                .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
-        clienteExistente.setNombreCliente(datosActualizados.getNombreCliente());
-        clienteExistente.setEmailCliente(datosActualizados.getEmailCliente());
-        clienteExistente.setDireccionCliente(datosActualizados.getDireccionCliente());
-        return clienteExistente;
-    }
-
-    public void eliminarCliente(int idCliente) {
-        Cliente clienteAEliminar = buscarClientePorId(idCliente)
-                .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
-        listaClientes.remove(clienteAEliminar);
+    public void eliminarClientePorId(Integer idCliente) {
+        clienteRepository.deleteById(idCliente);
     }
 }
