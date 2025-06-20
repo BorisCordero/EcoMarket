@@ -2,6 +2,8 @@ package com.ecomarket.pedido_service.controller;
 
 import com.ecomarket.pedido_service.model.Pedido;
 import com.ecomarket.pedido_service.service.PedidoService;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +14,7 @@ import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
+@Tag(name = "Pedidos", description = "Operaciones relacionadas con pedidos")
 @RestController
 @RequestMapping("/api/v1/pedidos")
 public class PedidoController {
@@ -22,6 +25,7 @@ public class PedidoController {
         this.pedidoService = pedidoService;
     }
 
+    @Operation(summary = "Listar todos los pedidos")
     @GetMapping
     public ResponseEntity<CollectionModel<EntityModel<Pedido>>> listarPedidos() {
         List<Pedido> pedidos = pedidoService.obtenerTodosLosPedidos();
@@ -38,6 +42,7 @@ public class PedidoController {
         return ResponseEntity.ok(collectionModel);
     }
 
+    @Operation(summary = "Obtener un pedido por su ID")
     @GetMapping("/{id}")
     public ResponseEntity<EntityModel<Pedido>> obtenerPedido(@PathVariable Integer id) {
         return pedidoService.buscarPedidoPorId(id)
@@ -49,11 +54,13 @@ public class PedidoController {
             .orElse(ResponseEntity.notFound().build());
     }
 
+    @Operation(summary = "Registrar un nuevo pedido")
     @PostMapping
     public ResponseEntity<Pedido> registrarPedido(@RequestBody Pedido pedido) {
         return ResponseEntity.ok(pedidoService.guardarPedido(pedido));
     }
 
+    @Operation(summary = "Actualizar un pedido existente por su ID")
     @PutMapping("/{id}")
     public ResponseEntity<Pedido> actualizarPedido(@PathVariable Integer id, @RequestBody Pedido pedidoActualizado) {
         return pedidoService.buscarPedidoPorId(id)
@@ -63,6 +70,7 @@ public class PedidoController {
             }).orElse(ResponseEntity.notFound().build());
     }
 
+    @Operation(summary = "Eliminar un pedido por su ID")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarPedido(@PathVariable Integer id) {
         pedidoService.eliminarPedidoPorId(id);
