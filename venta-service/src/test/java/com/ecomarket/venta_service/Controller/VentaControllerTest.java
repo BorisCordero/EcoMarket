@@ -41,7 +41,8 @@ public class VentaControllerTest {
         mockMvc.perform(get("/api/v1/ventas"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(2)))
-                .andExpect(jsonPath("$[0].metodoPago", is("Efectivo")));
+                .andExpect(jsonPath("$._embedded.ventaList[0].metodoPago", is("Efectivo")));
+
     }
 
     @Test

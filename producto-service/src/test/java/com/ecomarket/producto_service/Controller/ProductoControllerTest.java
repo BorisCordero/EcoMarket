@@ -43,7 +43,7 @@ class ProductoControllerTest {
         mockMvc.perform(get("/api/v1/productos"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(2)))
-                .andExpect(jsonPath("$[0].nombreProducto", is("Café")));
+                .andExpect(jsonPath("$._embedded.productoList[0].nombreProducto").value("Café"));
     }
 
     @Test

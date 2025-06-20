@@ -46,7 +46,8 @@ class PedidoControllerTest {
         mockMvc.perform(get("/api/v1/pedidos"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(2)))
-                .andExpect(jsonPath("$[0].nombreProducto", is("Café")));
+                .andExpect(jsonPath("$._embedded.pedidoList[0].nombreProducto").value("Café"));
+
     }
 
     @Test

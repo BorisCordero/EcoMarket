@@ -2,10 +2,15 @@ package com.ecomarket.venta_service.controller;
 
 import com.ecomarket.venta_service.model.Venta;
 import com.ecomarket.venta_service.service.VentaService;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 @RestController
 @RequestMapping("/api/v1/ventas")
@@ -18,15 +23,30 @@ public class VentaController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Venta>> listarVentas() {
-        return ResponseEntity.ok(ventaService.obtenerTodasLasVentas());
+    public ResponseEntity<CollectionModel<EntityModel<Venta>>> listarVentas() {
+        List<Venta> ventas = ventaService.obtenerTodasLasVentas();
+
+        List<EntityModel<Venta>> ventasConLinks = ventas.stream()
+            .map(venta -> EntityModel.of(venta,
+                linkTo(methodOn(VentaController.class).obtenerVenta(venta.getIdVenta())).withSelfRel()
+            )).collect(Collectors.toList());
+
+        CollectionModel<EntityModel<Venta>> collectionModel = CollectionModel.of(ventasConLinks,
+            linkTo(methodOn(VentaController.class).listarVentas()).withSelfRel()
+        );
+
+        return ResponseEntity.ok(collectionModel);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Venta> obtenerVenta(@PathVariable Integer id) {
+    public ResponseEntity<EntityModel<Venta>> obtenerVenta(@PathVariable Integer id) {
         return ventaService.buscarVentaPorId(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+            .map(venta -> EntityModel.of(venta,
+                linkTo(methodOn(VentaController.class).obtenerVenta(id)).withSelfRel(),
+                linkTo(methodOn(VentaController.class).listarVentas()).withRel("todas-las-ventas")
+            ))
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
