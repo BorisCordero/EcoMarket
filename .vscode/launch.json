@@ -2,6 +2,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "ProductoServiceApplication",
+            "request": "launch",
+            "mainClass": "com.ecomarket.producto_service.ProductoServiceApplication",
+            "projectName": "producto-service"
+        },
+        {
+            "type": "java",
+            "name": "PedidoServiceApplication",
+            "request": "launch",
+            "mainClass": "com.ecomarket.pedido_service.PedidoServiceApplication",
+            "projectName": "pedido-service"
+        },
+        {
+            "type": "java",
             "name": "ClienteServiceApplication",
             "request": "launch",
             "mainClass": "com.ecomarket.cliente_service.ClienteServiceApplication",
