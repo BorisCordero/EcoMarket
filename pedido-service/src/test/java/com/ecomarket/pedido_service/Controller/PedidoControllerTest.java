@@ -3,32 +3,47 @@ package com.ecomarket.pedido_service.Controller;
 import com.ecomarket.pedido_service.controller.PedidoController;
 import com.ecomarket.pedido_service.model.Pedido;
 import com.ecomarket.pedido_service.service.PedidoService;
+import com.ecomarket.pedido_service.config.JwtFilter;
+import com.ecomarket.pedido_service.util.JwtUtil;
 
 import org.junit.jupiter.api.Test;
-
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.ArgumentMatchers.any;
-
-import static org.hamcrest.Matchers.is;
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
 import java.util.Optional;
 
-//import static org.hamcrest.Matchers.*;
-
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.ArgumentMatchers.any;
+import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@AutoConfigureMockMvc(addFilters = false)
 @WebMvcTest(PedidoController.class)
+@Import(PedidoControllerTest.Config.class)
 class PedidoControllerTest {
+
+    @TestConfiguration
+    static class Config {
+        @Bean
+        public JwtUtil jwtUtil() {
+            return org.mockito.Mockito.mock(JwtUtil.class);
+        }
+
+        @Bean
+        public JwtFilter jwtFilter(JwtUtil jwtUtil) {
+            return new JwtFilter(jwtUtil);
+        }
+    }
 
     @Autowired
     private MockMvc mockMvc;
@@ -45,9 +60,8 @@ class PedidoControllerTest {
 
         mockMvc.perform(get("/api/v1/pedidos"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()", is(2)))
+                .andExpect(jsonPath("$._embedded.pedidoList.length()", is(2)))
                 .andExpect(jsonPath("$._embedded.pedidoList[0].nombreProducto").value("Café"));
-
     }
 
     @Test
@@ -91,4 +105,3 @@ class PedidoControllerTest {
                 .andExpect(status().isNoContent());
     }
 }
-

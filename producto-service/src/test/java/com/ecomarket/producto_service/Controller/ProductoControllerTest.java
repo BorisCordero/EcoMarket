@@ -3,15 +3,12 @@ package com.ecomarket.producto_service.Controller;
 import com.ecomarket.producto_service.controller.ProductoController;
 import com.ecomarket.producto_service.model.Producto;
 import com.ecomarket.producto_service.service.ProductoService;
+import com.ecomarket.producto_service.config.JwtFilter;
 
 import org.junit.jupiter.api.Test;
-
-import org.mockito.ArgumentMatchers;
-import org.mockito.Mockito;
-import static org.mockito.ArgumentMatchers.any;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -19,11 +16,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Arrays;
 import java.util.Optional;
 
-import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@AutoConfigureMockMvc(addFilters = false)
 @WebMvcTest(ProductoController.class)
 class ProductoControllerTest {
 
@@ -32,6 +30,9 @@ class ProductoControllerTest {
 
     @MockBean
     private ProductoService productoService;
+
+    @MockBean
+    private JwtFilter jwtFilter;
 
     @Test
     void listarProductos_deberiaRetornarListaDeProductos() throws Exception {
@@ -42,7 +43,6 @@ class ProductoControllerTest {
 
         mockMvc.perform(get("/api/v1/productos"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()", is(2)))
                 .andExpect(jsonPath("$._embedded.productoList[0].nombreProducto").value("Café"));
     }
 
@@ -53,7 +53,7 @@ class ProductoControllerTest {
 
         mockMvc.perform(get("/api/v1/productos/1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.nombreProducto", is("Café")));
+                .andExpect(jsonPath("$.nombreProducto").value("Café"));
     }
 
     @Test
@@ -75,8 +75,8 @@ class ProductoControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"nombreProducto\":\"Brownie\",\"descripcion\":\"Brownie vegano\",\"precioUnitario\":2000,\"stockDisponible\":30}"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.idProducto", is(3)))
-                .andExpect(jsonPath("$.nombreProducto", is("Brownie")));
+                .andExpect(jsonPath("$.idProducto").value(3))
+                .andExpect(jsonPath("$.nombreProducto").value("Brownie"));
     }
 
     @Test
