@@ -2,8 +2,6 @@ package com.ecomarket.venta_service.controller;
 
 import com.ecomarket.venta_service.model.Venta;
 import com.ecomarket.venta_service.service.VentaService;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +12,6 @@ import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
-@Tag(name = "Ventas", description = "Operaciones relacionadas con ventas")
 @RestController
 @RequestMapping("/api/v1/ventas")
 public class VentaController {
@@ -25,7 +22,6 @@ public class VentaController {
         this.ventaService = ventaService;
     }
 
-    @Operation(summary = "Listar todas las ventas")
     @GetMapping
     public ResponseEntity<CollectionModel<EntityModel<Venta>>> listarVentas() {
         List<Venta> ventas = ventaService.obtenerTodasLasVentas();
@@ -42,7 +38,6 @@ public class VentaController {
         return ResponseEntity.ok(collectionModel);
     }
 
-    @Operation(summary = "Obtener una venta por su ID")
     @GetMapping("/{id}")
     public ResponseEntity<EntityModel<Venta>> obtenerVenta(@PathVariable Integer id) {
         return ventaService.buscarVentaPorId(id)
@@ -54,19 +49,16 @@ public class VentaController {
             .orElse(ResponseEntity.notFound().build());
     }
 
-    @Operation(summary = "Registrar una nueva venta")
     @PostMapping
     public ResponseEntity<Venta> registrarVenta(@RequestBody Venta nuevaVenta) {
         return ResponseEntity.ok(ventaService.registrarVenta(nuevaVenta));
     }
 
-    @Operation(summary = "Actualizar una venta existente por su ID")
     @PutMapping("/{id}")
     public ResponseEntity<Venta> actualizarVenta(@PathVariable Integer id, @RequestBody Venta ventaActualizada) {
         return ResponseEntity.ok(ventaService.actualizarVenta(id, ventaActualizada));
     }
 
-    @Operation(summary = "Eliminar una venta por su ID")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarVenta(@PathVariable Integer id) {
         ventaService.eliminarVentaPorId(id);
