@@ -1,4 +1,4 @@
-package com.ecomarket.producto_service.util;
+package com.ecomarket.venta_service.util;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;

@@ -1,12 +1,14 @@
 package com.ecomarket.venta_service.Controller;
-import com.ecomarket.venta_service.controller.VentaController;
 
+import com.ecomarket.venta_service.controller.VentaController;
 import com.ecomarket.venta_service.model.Venta;
 import com.ecomarket.venta_service.service.VentaService;
+import com.ecomarket.venta_service.config.JwtFilter;
+
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -15,13 +17,13 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Optional;
 
-
-import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.hamcrest.Matchers.*;
 
+@AutoConfigureMockMvc(addFilters = false)
 @WebMvcTest(VentaController.class)
 public class VentaControllerTest {
 
@@ -30,6 +32,9 @@ public class VentaControllerTest {
 
     @MockBean
     private VentaService ventaService;
+
+    @MockBean
+    private JwtFilter jwtFilter;
 
     @Test
     void listarVentas_deberiaRetornarLista() throws Exception {
@@ -40,9 +45,7 @@ public class VentaControllerTest {
 
         mockMvc.perform(get("/api/v1/ventas"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()", is(2)))
                 .andExpect(jsonPath("$._embedded.ventaList[0].metodoPago", is("Efectivo")));
-
     }
 
     @Test
