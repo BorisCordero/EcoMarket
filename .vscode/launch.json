@@ -2,13 +2,6 @@
     "configurations": [
         {
             "type": "java",
-            "name": "AuthServiceApplication",
-            "request": "launch",
-            "mainClass": "com.ecomarket.auth_service.AuthServiceApplication",
-            "projectName": "auth-service"
-        },
-        {
-            "type": "java",
             "name": "ProductoServiceApplication",
             "request": "launch",
             "mainClass": "com.ecomarket.producto_service.ProductoServiceApplication",
