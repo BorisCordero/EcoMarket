@@ -1,0 +1,42 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "AuthServiceApplication",
+            "request": "launch",
+            "mainClass": "com.ecomarket.auth_service.AuthServiceApplication",
+            "projectName": "auth-service"
+        },
+        {
+            "type": "java",
+            "name": "ProductoServiceApplication",
+            "request": "launch",
+            "mainClass": "com.ecomarket.producto_service.ProductoServiceApplication",
+            "projectName": "producto-service"
+        },
+        {
+            "type": "java",
+            "name": "PedidoServiceApplication",
+            "request": "launch",
+            "mainClass": "com.ecomarket.pedido_service.PedidoServiceApplication",
+            "projectName": "pedido-service"
+        },
+        {
+            "type": "java",
+            "name": "ClienteServiceApplication",
+            "request": "launch",
+            "mainClass": "com.ecomarket.cliente_service.ClienteServiceApplication",
+            "projectName": "cliente-service"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-VentaServiceApplication<venta-service>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.ecomarket.venta_service.VentaServiceApplication",
+            "projectName": "venta-service",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
