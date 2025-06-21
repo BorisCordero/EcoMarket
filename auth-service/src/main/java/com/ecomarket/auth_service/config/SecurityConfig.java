@@ -1,5 +1,6 @@
 package com.ecomarket.auth_service.config;
 
+import com.ecomarket.auth_service.config.JwtFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
