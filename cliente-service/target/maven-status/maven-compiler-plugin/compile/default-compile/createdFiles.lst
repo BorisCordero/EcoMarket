@@ -1,4 +1,5 @@
 com\ecomarket\cliente_service\controller\ClienteController.class
+com\ecomarket\cliente_service\config\OpenApiConfig.class
 com\ecomarket\cliente_service\config\JwtFilter.class
 com\ecomarket\cliente_service\config\SecurityConfig.class
 com\ecomarket\cliente_service\ClienteServiceApplication.class

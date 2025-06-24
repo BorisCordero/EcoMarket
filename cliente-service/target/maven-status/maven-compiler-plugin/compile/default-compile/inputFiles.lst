@@ -1,8 +1,9 @@
-C:\Users\Boris\Desktop\Contenido Fullstack\EcoMarket App\cliente-service\src\main\java\com\ecomarket\cliente_service\ClienteServiceApplication.java
-C:\Users\Boris\Desktop\Contenido Fullstack\EcoMarket App\cliente-service\src\main\java\com\ecomarket\cliente_service\config\JwtFilter.java
-C:\Users\Boris\Desktop\Contenido Fullstack\EcoMarket App\cliente-service\src\main\java\com\ecomarket\cliente_service\config\SecurityConfig.java
-C:\Users\Boris\Desktop\Contenido Fullstack\EcoMarket App\cliente-service\src\main\java\com\ecomarket\cliente_service\controller\ClienteController.java
-C:\Users\Boris\Desktop\Contenido Fullstack\EcoMarket App\cliente-service\src\main\java\com\ecomarket\cliente_service\model\Cliente.java
-C:\Users\Boris\Desktop\Contenido Fullstack\EcoMarket App\cliente-service\src\main\java\com\ecomarket\cliente_service\repository\ClienteRepository.java
-C:\Users\Boris\Desktop\Contenido Fullstack\EcoMarket App\cliente-service\src\main\java\com\ecomarket\cliente_service\service\ClienteService.java
-C:\Users\Boris\Desktop\Contenido Fullstack\EcoMarket App\cliente-service\src\main\java\com\ecomarket\cliente_service\util\JwtUtil.java
+C:\Users\iswag\OneDrive\Escritorio\repositorios\EcoMarket\cliente-service\src\main\java\com\ecomarket\cliente_service\ClienteServiceApplication.java
+C:\Users\iswag\OneDrive\Escritorio\repositorios\EcoMarket\cliente-service\src\main\java\com\ecomarket\cliente_service\config\JwtFilter.java
+C:\Users\iswag\OneDrive\Escritorio\repositorios\EcoMarket\cliente-service\src\main\java\com\ecomarket\cliente_service\config\OpenApiConfig.java
+C:\Users\iswag\OneDrive\Escritorio\repositorios\EcoMarket\cliente-service\src\main\java\com\ecomarket\cliente_service\config\SecurityConfig.java
+C:\Users\iswag\OneDrive\Escritorio\repositorios\EcoMarket\cliente-service\src\main\java\com\ecomarket\cliente_service\controller\ClienteController.java
+C:\Users\iswag\OneDrive\Escritorio\repositorios\EcoMarket\cliente-service\src\main\java\com\ecomarket\cliente_service\model\Cliente.java
+C:\Users\iswag\OneDrive\Escritorio\repositorios\EcoMarket\cliente-service\src\main\java\com\ecomarket\cliente_service\repository\ClienteRepository.java
+C:\Users\iswag\OneDrive\Escritorio\repositorios\EcoMarket\cliente-service\src\main\java\com\ecomarket\cliente_service\service\ClienteService.java
+C:\Users\iswag\OneDrive\Escritorio\repositorios\EcoMarket\cliente-service\src\main\java\com\ecomarket\cliente_service\util\JwtUtil.java
