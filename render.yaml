@@ -3,15 +3,15 @@ services:
     name: cliente-service
     env: docker
     plan: free
-    repo: https://github.com/BorisCordero/EcoMarket
-    rootDir: cliente-service
     branch: develop
+    rootDir: cliente-service
+    dockerfilePath: Dockerfile
+    buildCommand: ./mvnw clean package -DskipTests
+    startCommand: java -jar target/cliente-service-0.0.1-SNAPSHOT.jar
     envVars:
       - key: SPRING_DATASOURCE_URL
-        value: jdbc:mysql://mysql-host:3306/ecomarket_db
+        value: jdbc:mysql://crossover.proxy.rlwy.net:21784/railway?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
       - key: SPRING_DATASOURCE_USERNAME
         value: root
       - key: SPRING_DATASOURCE_PASSWORD
-        value: ""
-      - key: JWT_SECRET
-        value: mi_clave_secreta_super_segura_1234567890
+        value: vNvBNCEaLhzUogcIoDbbMufsarJAqpBE
