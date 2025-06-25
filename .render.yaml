@@ -3,9 +3,40 @@ services:
     name: cliente-service
     env: java
     plan: free
+    branch: develop
     rootDir: cliente-service
-    buildCommand: ./mvnw clean install
+    buildCommand: mvn clean install
     startCommand: java -jar target/cliente-service-0.0.1-SNAPSHOT.jar
     envVars:
-      - key: SPRING_PROFILES_ACTIVE
-        value: default
+      - key: SERVER_PORT
+        value: 8081
+
+      - key: SPRING_DATASOURCE_URL
+        value: jdbc:mysql://nombre_host_mysql:3306/ecomarket_db
+
+      - key: SPRING_DATASOURCE_USERNAME
+        value: root
+
+      - key: SPRING_DATASOURCE_PASSWORD
+        value: 
+
+      - key: SPRING_JPA_HIBERNATE_DDL_AUTO
+        value: update
+
+      - key: SPRING_JPA_SHOW_SQL
+        value: "true"
+
+      - key: SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT
+        value: org.hibernate.dialect.MySQL8Dialect
+
+      - key: JWT_SECRET
+        value: mi_clave_secreta_super_segura_1234567890
+
+      - key: SPRINGDOC_API_DOCS_ENABLED
+        value: "true"
+
+      - key: SPRINGDOC_API_DOCS_PATH
+        value: /api-docs
+
+      - key: SPRINGDOC_SWAGGER_UI_PATH
+        value: /swagger-ui.html
