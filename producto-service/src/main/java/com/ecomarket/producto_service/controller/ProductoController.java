@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
@@ -32,10 +33,13 @@ public class ProductoController {
 
         List<EntityModel<Producto>> productosConLinks = productos.stream()
             .map(producto -> EntityModel.of(producto,
-                linkTo(methodOn(ProductoController.class).obtenerProducto(producto.getIdProducto())).withSelfRel()
-            )).collect(Collectors.toList());
+                linkTo(methodOn(ProductoController.class).obtenerProducto(producto.getIdProducto())).withSelfRel(),
+                linkTo(methodOn(ProductoController.class).listarProductos()).withRel("todos-los-productos")
+            ))
+            .collect(Collectors.toList());
 
-        CollectionModel<EntityModel<Producto>> collectionModel = CollectionModel.of(productosConLinks,
+        CollectionModel<EntityModel<Producto>> collectionModel = CollectionModel.of(
+            productosConLinks,
             linkTo(methodOn(ProductoController.class).listarProductos()).withSelfRel()
         );
 
@@ -45,29 +49,47 @@ public class ProductoController {
     @Operation(summary = "Obtener un producto por su ID")
     @GetMapping("/{id}")
     public ResponseEntity<EntityModel<Producto>> obtenerProducto(@PathVariable Integer id) {
-        return productoService.buscarProductoPorId(id)
-            .map(producto -> EntityModel.of(producto,
+        Optional<Producto> productoOpt = productoService.buscarProductoPorId(id);
+
+        if (productoOpt.isPresent()) {
+            Producto producto = productoOpt.get();
+            EntityModel<Producto> recurso = EntityModel.of(producto,
                 linkTo(methodOn(ProductoController.class).obtenerProducto(id)).withSelfRel(),
                 linkTo(methodOn(ProductoController.class).listarProductos()).withRel("todos-los-productos")
-            ))
-            .map(ResponseEntity::ok)
-            .orElse(ResponseEntity.notFound().build());
+            );
+            return ResponseEntity.ok(recurso);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @Operation(summary = "Registrar un nuevo producto")
     @PostMapping
-    public ResponseEntity<Producto> registrarProducto(@RequestBody Producto producto) {
-        return ResponseEntity.ok(productoService.guardarProducto(producto));
+    public ResponseEntity<EntityModel<Producto>> registrarProducto(@RequestBody Producto producto) {
+        Producto nuevoProducto = productoService.guardarProducto(producto);
+        EntityModel<Producto> recurso = EntityModel.of(nuevoProducto,
+            linkTo(methodOn(ProductoController.class).obtenerProducto(nuevoProducto.getIdProducto())).withSelfRel(),
+            linkTo(methodOn(ProductoController.class).listarProductos()).withRel("todos-los-productos")
+        );
+        return ResponseEntity.ok(recurso);
     }
 
     @Operation(summary = "Actualizar un producto existente por su ID")
     @PutMapping("/{id}")
-    public ResponseEntity<Producto> actualizarProducto(@PathVariable Integer id, @RequestBody Producto productoActualizado) {
-        return productoService.buscarProductoPorId(id)
-            .map(productoExistente -> {
-                productoActualizado.setIdProducto(id);
-                return ResponseEntity.ok(productoService.guardarProducto(productoActualizado));
-            }).orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<EntityModel<Producto>> actualizarProducto(@PathVariable Integer id, @RequestBody Producto productoActualizado) {
+        Optional<Producto> productoExistente = productoService.buscarProductoPorId(id);
+
+        if (productoExistente.isPresent()) {
+            productoActualizado.setIdProducto(id);
+            Producto actualizado = productoService.guardarProducto(productoActualizado);
+            EntityModel<Producto> recurso = EntityModel.of(actualizado,
+                linkTo(methodOn(ProductoController.class).obtenerProducto(id)).withSelfRel(),
+                linkTo(methodOn(ProductoController.class).listarProductos()).withRel("todos-los-productos")
+            );
+            return ResponseEntity.ok(recurso);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @Operation(summary = "Eliminar un producto por su ID")
