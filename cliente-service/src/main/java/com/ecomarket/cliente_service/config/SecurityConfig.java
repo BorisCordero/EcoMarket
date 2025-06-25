@@ -26,16 +26,16 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
-            .csrf(csrf -> csrf.disable()) // Desactiva CSRF (común en APIs REST)
-            .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Habilita CORS
+            .csrf(csrf -> csrf.disable())  
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))  
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
                     "/swagger-ui/**",
                     "/v3/api-docs/**",
                     "/swagger-ui.html",
-                    "/api/v1/clientes/**"  // Permite acceso público a la API (ajusta según necesidad)
-                ).permitAll()
-                .anyRequest().authenticated() // El resto requiere autenticación
+                    "/api/v1/clientes/**"  // Rutas públicas (ajusta según necesidad)
+                ).permitAll()  
+                .anyRequest().authenticated()  
             )
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
             .build();
@@ -44,12 +44,13 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("*")); // Permite todos los orígenes (en producción, reemplaza "*" con tu frontend)
+        config.setAllowedOrigins(List.of("*")); // Permite cualquier origen (cambia en producción)
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
+        config.setExposedHeaders(List.of("Authorization")); // Necesario para JWT en frontend
         
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config); // Aplica CORS a todas las rutas
+        source.registerCorsConfiguration("/**", config);  
         return source;
     }
 

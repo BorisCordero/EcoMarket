@@ -27,7 +27,7 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-
+        
         String authHeader = request.getHeader("Authorization");
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
@@ -37,12 +37,15 @@ public class JwtFilter extends OncePerRequestFilter {
                 String username = jwtUtil.getUsernameFromToken(token);
 
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        username, null,
-                        Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"))
+                    username, 
+                    null, 
+                    Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"))
                 );
-
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+            } else {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token inválido");
+                return;
             }
         }
 
