@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
@@ -33,13 +32,10 @@ public class VentaController {
 
         List<EntityModel<Venta>> ventasConLinks = ventas.stream()
             .map(venta -> EntityModel.of(venta,
-                linkTo(methodOn(VentaController.class).obtenerVenta(venta.getIdVenta())).withSelfRel(),
-                linkTo(methodOn(VentaController.class).listarVentas()).withRel("todas-las-ventas")
-            ))
-            .collect(Collectors.toList());
+                linkTo(methodOn(VentaController.class).obtenerVenta(venta.getIdVenta())).withSelfRel()
+            )).collect(Collectors.toList());
 
-        CollectionModel<EntityModel<Venta>> collectionModel = CollectionModel.of(
-            ventasConLinks,
+        CollectionModel<EntityModel<Venta>> collectionModel = CollectionModel.of(ventasConLinks,
             linkTo(methodOn(VentaController.class).listarVentas()).withSelfRel()
         );
 
@@ -49,47 +45,25 @@ public class VentaController {
     @Operation(summary = "Obtener una venta por su ID")
     @GetMapping("/{id}")
     public ResponseEntity<EntityModel<Venta>> obtenerVenta(@PathVariable Integer id) {
-        Optional<Venta> ventaOpt = ventaService.buscarVentaPorId(id);
-
-        if (ventaOpt.isPresent()) {
-            Venta venta = ventaOpt.get();
-            EntityModel<Venta> recurso = EntityModel.of(venta,
+        return ventaService.buscarVentaPorId(id)
+            .map(venta -> EntityModel.of(venta,
                 linkTo(methodOn(VentaController.class).obtenerVenta(id)).withSelfRel(),
                 linkTo(methodOn(VentaController.class).listarVentas()).withRel("todas-las-ventas")
-            );
-            return ResponseEntity.ok(recurso);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+            ))
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
     }
 
     @Operation(summary = "Registrar una nueva venta")
     @PostMapping
-    public ResponseEntity<EntityModel<Venta>> registrarVenta(@RequestBody Venta nuevaVenta) {
-        Venta ventaGuardada = ventaService.registrarVenta(nuevaVenta);
-        EntityModel<Venta> recurso = EntityModel.of(ventaGuardada,
-            linkTo(methodOn(VentaController.class).obtenerVenta(ventaGuardada.getIdVenta())).withSelfRel(),
-            linkTo(methodOn(VentaController.class).listarVentas()).withRel("todas-las-ventas")
-        );
-        return ResponseEntity.ok(recurso);
+    public ResponseEntity<Venta> registrarVenta(@RequestBody Venta nuevaVenta) {
+        return ResponseEntity.ok(ventaService.registrarVenta(nuevaVenta));
     }
 
     @Operation(summary = "Actualizar una venta existente por su ID")
     @PutMapping("/{id}")
-    public ResponseEntity<EntityModel<Venta>> actualizarVenta(@PathVariable Integer id, @RequestBody Venta ventaActualizada) {
-        Optional<Venta> ventaExistente = ventaService.buscarVentaPorId(id);
-
-        if (ventaExistente.isPresent()) {
-            ventaActualizada.setIdVenta(id);
-            Venta actualizada = ventaService.actualizarVenta(id, ventaActualizada);
-            EntityModel<Venta> recurso = EntityModel.of(actualizada,
-                linkTo(methodOn(VentaController.class).obtenerVenta(id)).withSelfRel(),
-                linkTo(methodOn(VentaController.class).listarVentas()).withRel("todas-las-ventas")
-            );
-            return ResponseEntity.ok(recurso);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<Venta> actualizarVenta(@PathVariable Integer id, @RequestBody Venta ventaActualizada) {
+        return ResponseEntity.ok(ventaService.actualizarVenta(id, ventaActualizada));
     }
 
     @Operation(summary = "Eliminar una venta por su ID")

@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
@@ -26,70 +25,49 @@ public class PedidoController {
         this.pedidoService = pedidoService;
     }
 
-    @Operation(summary = "Listar todos los pedidos con enlaces HATEOAS")
+    @Operation(summary = "Listar todos los pedidos")
     @GetMapping
     public ResponseEntity<CollectionModel<EntityModel<Pedido>>> listarPedidos() {
         List<Pedido> pedidos = pedidoService.obtenerTodosLosPedidos();
 
         List<EntityModel<Pedido>> pedidosConLinks = pedidos.stream()
             .map(pedido -> EntityModel.of(pedido,
-                linkTo(methodOn(PedidoController.class).obtenerPedido(pedido.getIdPedido())).withSelfRel(),
-                linkTo(methodOn(PedidoController.class).listarPedidos()).withRel("todos-los-pedidos")
-            ))
-            .collect(Collectors.toList());
+                linkTo(methodOn(PedidoController.class).obtenerPedido(pedido.getIdPedido())).withSelfRel()
+            )).collect(Collectors.toList());
 
-        CollectionModel<EntityModel<Pedido>> collectionModel = CollectionModel.of(
-            pedidosConLinks,
+        CollectionModel<EntityModel<Pedido>> collectionModel = CollectionModel.of(pedidosConLinks,
             linkTo(methodOn(PedidoController.class).listarPedidos()).withSelfRel()
         );
 
         return ResponseEntity.ok(collectionModel);
     }
 
-    @Operation(summary = "Obtener un pedido por su ID con enlaces HATEOAS")
+    @Operation(summary = "Obtener un pedido por su ID")
     @GetMapping("/{id}")
     public ResponseEntity<EntityModel<Pedido>> obtenerPedido(@PathVariable Integer id) {
-        Optional<Pedido> pedidoOpt = pedidoService.buscarPedidoPorId(id);
-
-        if (pedidoOpt.isPresent()) {
-            Pedido pedido = pedidoOpt.get();
-            EntityModel<Pedido> recurso = EntityModel.of(pedido,
+        return pedidoService.buscarPedidoPorId(id)
+            .map(pedido -> EntityModel.of(pedido,
                 linkTo(methodOn(PedidoController.class).obtenerPedido(id)).withSelfRel(),
                 linkTo(methodOn(PedidoController.class).listarPedidos()).withRel("todos-los-pedidos")
-            );
-            return ResponseEntity.ok(recurso);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+            ))
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
     }
 
     @Operation(summary = "Registrar un nuevo pedido")
     @PostMapping
-    public ResponseEntity<EntityModel<Pedido>> registrarPedido(@RequestBody Pedido pedido) {
-        Pedido nuevoPedido = pedidoService.guardarPedido(pedido);
-        EntityModel<Pedido> recurso = EntityModel.of(nuevoPedido,
-            linkTo(methodOn(PedidoController.class).obtenerPedido(nuevoPedido.getIdPedido())).withSelfRel(),
-            linkTo(methodOn(PedidoController.class).listarPedidos()).withRel("todos-los-pedidos")
-        );
-        return ResponseEntity.ok(recurso);
+    public ResponseEntity<Pedido> registrarPedido(@RequestBody Pedido pedido) {
+        return ResponseEntity.ok(pedidoService.guardarPedido(pedido));
     }
 
     @Operation(summary = "Actualizar un pedido existente por su ID")
     @PutMapping("/{id}")
-    public ResponseEntity<EntityModel<Pedido>> actualizarPedido(@PathVariable Integer id, @RequestBody Pedido pedidoActualizado) {
-        Optional<Pedido> pedidoExistente = pedidoService.buscarPedidoPorId(id);
-
-        if (pedidoExistente.isPresent()) {
-            pedidoActualizado.setIdPedido(id);
-            Pedido actualizado = pedidoService.guardarPedido(pedidoActualizado);
-            EntityModel<Pedido> recurso = EntityModel.of(actualizado,
-                linkTo(methodOn(PedidoController.class).obtenerPedido(id)).withSelfRel(),
-                linkTo(methodOn(PedidoController.class).listarPedidos()).withRel("todos-los-pedidos")
-            );
-            return ResponseEntity.ok(recurso);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<Pedido> actualizarPedido(@PathVariable Integer id, @RequestBody Pedido pedidoActualizado) {
+        return pedidoService.buscarPedidoPorId(id)
+            .map(pedidoExistente -> {
+                pedidoActualizado.setIdPedido(id);
+                return ResponseEntity.ok(pedidoService.guardarPedido(pedidoActualizado));
+            }).orElse(ResponseEntity.notFound().build());
     }
 
     @Operation(summary = "Eliminar un pedido por su ID")
