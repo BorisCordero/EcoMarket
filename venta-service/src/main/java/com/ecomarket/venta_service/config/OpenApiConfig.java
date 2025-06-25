@@ -1,4 +1,4 @@
-package com.ecomarket.pedido_service.config;
+package com.ecomarket.venta_service.config;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -14,7 +14,7 @@ public class OpenApiConfig {
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
-            .info(new Info().title("EcoMarket - Pedido API").version("1.0"))
+            .info(new Info().title("EcoMarket - Venta API").version("1.0"))
             .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
             .components(new Components().addSecuritySchemes("bearerAuth",
                 new SecurityScheme()
